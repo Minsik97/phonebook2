@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.javaex.dao.PhoneDao;
+import com.javaex.utill.WebUtill;
 import com.javaex.vo.PhoneVo;
 
 @WebServlet("/pbc")
@@ -25,30 +26,17 @@ public class PhoneController extends HttpServlet {
 		// 파라미터 action 값을 읽어서
 		String action = request.getParameter("action");
 		System.out.println(action);
-
-		if ("list".equals(action)) {
-			System.out.println("리스트 처리");
-
-			// 리스트 출력 처리
-			PhoneDao phoneDao = new PhoneDao();
-			List<PhoneVo> personList = phoneDao.getPersonList();
-
-			// html -->엄청 복잡함. -->jsp에서 짜는게 편하다.
-
-			// 데이터 전달
-			request.setAttribute("pList", personList);
-
-			// jsp에 포워드 시킨다.
-			RequestDispatcher rd = request.getRequestDispatcher("./WEB-INF/list.jsp"); // jsp파일 위치
-			rd.forward(request, response);
-			
-		} else if ("wform".equals(action)) {
+		
+		
+		if ("wform".equals(action)) {
 			System.out.println("등록 폼 처리");
 			
-			
+			/*
 			RequestDispatcher rd = request.getRequestDispatcher("./WEB-INF/writeform.jsp");
 			rd.forward(request, response);
-			
+			*/
+			WebUtill.forward(request, response, "./WEB-INF/writeform.jsp");
+		
 		} else if ("insert".equals(action)) {
 			System.out.println("전화번호 저장");
 
@@ -64,9 +52,12 @@ public class PhoneController extends HttpServlet {
 			PhoneDao phoneDao = new PhoneDao();
 			// dao personInsert(phoneVo)
 			phoneDao.personInsert(phoneVo);
-
+			
+			/*
 			response.sendRedirect("/phonebook2/pbc?action=list");
-
+			*/
+			WebUtill.redirect(request, response, "/phonebook2/pbc?action=list");
+	
 		} else if("delete".equals(action)) {
 			System.out.println("정보 삭제");
 			
@@ -118,6 +109,27 @@ public class PhoneController extends HttpServlet {
 			
 			//리스트 화면 출력
 			response.sendRedirect("/phonebook2/pbc?action=list");
+			
+		} else{ //기본값을 리스트로
+			System.out.println("리스트 처리");
+
+			// 리스트 출력 처리
+			PhoneDao phoneDao = new PhoneDao();
+			List<PhoneVo> personList = phoneDao.getPersonList();
+
+			// html -->엄청 복잡함. -->jsp에서 짜는게 편하다.
+
+			// 데이터 전달
+			request.setAttribute("pList", personList);
+
+			// jsp에 포워드 시킨다.
+			/*
+			RequestDispatcher rd = request.getRequestDispatcher("./WEB-INF/list.jsp"); // jsp파일 위치
+			rd.forward(request, response);
+			*/
+			
+			WebUtill.forward(request, response, "./WEB-INF/list.jsp");
+			
 		}
 			
 
